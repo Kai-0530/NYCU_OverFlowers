@@ -1,3 +1,4 @@
+const int p = 998244353, g = 3, gi = 332748118;
 int n, k;
 int fp(int a, int m){
     int res = 1;
