@@ -50,12 +50,10 @@ Circle circle(pdd a, pdd b, pdd c){ //三點求圓
 }
 void solve(){
     p.clear();
-    cin >> n >> R >> r;
-    p.resize(n + 1);
-    p.pb({0.0, 0.0});
+    cin >> n;
+    p.resize(n);
     for (int i = 1; i <= n; i++){
         cin >> p[i].F >> p[i].S;
-        p[i] = p[i] + p[i - 1];
     }
     random_shuffle(all(p));
     c = {p[0], 0};
@@ -74,7 +72,8 @@ void solve(){
             }
         }
     }
+    //c: {圓心, 半徑}
     if (n == 1) c = {(p[0] + p[1]) / 2.0, 0};
     cout << setprecision(9) << fixed;
-    cout << -c.o.F << " " << -c.o.S << endl;;
+    cout << -c.o.F << " " << -c.o.S << endl;
 }
