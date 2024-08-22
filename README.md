@@ -1,6 +1,6 @@
 # NCTU TEAM CODEBOOK
 ## How to Build
-Step 1: Download the source code. 
+Step 1: Download the source code. <br />
 Step 2: Build by 'python build.py'
 
 ## Dependencies
