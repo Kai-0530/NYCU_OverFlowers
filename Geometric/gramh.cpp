@@ -1,4 +1,11 @@
 //記得先定義叉積與減
+pdd operator-(pdd a, pdd b){
+    return {a.F - b.F, a.S - b.S};
+}
+double operator*(pdd a, pdd b){
+    return a.F * b.S -  a.S * b.F;
+}
+//ps是所有的點
 vector<pdd> convexHull(vector<pdd>& ps) {
     sort(all(ps));
     vector<pdd> hull;
