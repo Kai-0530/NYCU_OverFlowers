@@ -2,6 +2,7 @@
 #define int long long int
 #define all(x) (x).begin(), (x).end()
 #define INF 1e15+9
+#define DBG(x) cout<<(#x " = ") <<x<<endl;
 #define pb push_back
 #define fastio ios_base::sync_with_stdio(0);cin.tie(0);
 using namespace std;
