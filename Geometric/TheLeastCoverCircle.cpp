@@ -52,6 +52,7 @@ void solve(){
     p.clear();
     cin >> n;
     p.resize(n);
+    //輸入所有的點
     for (int i = 1; i <= n; i++){
         cin >> p[i].F >> p[i].S;
     }
