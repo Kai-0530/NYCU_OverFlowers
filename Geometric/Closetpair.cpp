@@ -6,6 +6,7 @@ ll dd(const pii& a, const pii& b) {
     return dx * dx + dy * dy;
 }
 const ll inf = 1e18;
+//在一點對陣列的[l, r]間找最近點對
 ll dac(vector<pii>& p, int l, int r) {
     if (l >= r) return inf;
     int m = (l + r) / 2;
