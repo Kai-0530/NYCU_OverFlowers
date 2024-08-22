@@ -22,6 +22,7 @@ void modify(int t, int l, int r, int ql, int qr, int v) {
 int main() {
     cin >> n;
     for (int i = 0; i < n; i++) {
+        //輸入個個長方形的上下左右界
         cin >> r[i].l >> r[i].r >> r[i].b >> r[i].t;
         if (r[i].l > r[i].r) swap(r[i].l, r[i].r);
         if (r[i].b > r[i].t) swap(r[i].b, r[i].t);
