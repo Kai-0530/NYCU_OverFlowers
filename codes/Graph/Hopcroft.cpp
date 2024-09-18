@@ -1,3 +1,4 @@
+// O(sqrt(V)E)
 struct Graph{
     static const int MAXN = 4005;
     vector<int> G[MAXN];
