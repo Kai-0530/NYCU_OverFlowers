@@ -70,6 +70,7 @@ struct Graph{
 
 /*
 graph.init(n1, n2) : 2 parts' node numbers
-graph.addEdge(i, j) : edge i->j
-graph.solve(): match numbers
+graph.addEdge(i, j) : edge i->j (不須bias)
+graph.solve() : return match numbers
+graph.match[i] : match AFTER bias!
 */
