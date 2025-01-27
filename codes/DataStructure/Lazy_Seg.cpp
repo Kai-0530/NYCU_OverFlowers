@@ -4,7 +4,6 @@ using namespace std;
 const int maxn = 2e5+5;
 
 struct SegTree{
-    // only need to revise pull & addTag
     int sum[maxn*4], tag[maxn*4];
     void init(int n){
         for(int i=0; i<=n*4; i++){
