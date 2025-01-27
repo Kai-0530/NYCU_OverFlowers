@@ -1,68 +1,70 @@
 // range upd (+k) and query sum
-#include <bits/stdc++.h>
+#include<bits/stdc++.h>
 #define int long long int
 using namespace std;
-const int N=1e5+10;
-struct node{
-    int sum;
-    int l,r;
-    int tag;
-}tr[N*4];
-int a[N];
-inline void pushup(int x){
-    tr[x].sum=tr[2*x].sum+tr[2*x+1].sum;//pushup操作
-}
-inline void pushudown(int x){
-    if(tr[x].tag){
-        tr[2*x].tag+=tr[x].tag,tr[2*x+1].tag+=tr[x].tag;
-        tr[2*x].sum+=tr[x].tag*(tr[2*x].r-tr[2*x].l+1);
-        tr[2*x+1].sum+=tr[x].tag*(tr[2*x+1].r-tr[2*x+1].l+1);
-        tr[x].tag=0;
-    }
-}
-void build(int x,int l,int r){
-    tr[x].l=l,tr[x].r=r,tr[x].tag=0;
-    if(l==r){
-        tr[x].sum=a[l];
-        return;
-    }
-    int mid=(l+r)/2;
-    build(2*x,l,mid),build(2*x+1,mid+1,r);
-    pushup(x);
-}
-int query(int x,int l,int r){
-    if(l<=tr[x].l&&r>=tr[x].r) return tr[x].sum;
-    pushudown(x);
-    int mid=(tr[x].l+tr[x].r)/2,sum=0;
-    if(l<=mid) sum+=query(x*2,l,r);
-    if(r>mid) sum+=query(x*2+1,l,r);
-    return sum; 
-}
-void update(int now,int l,int r,int k){
-    if(l<=tr[now].l&&r>=tr[now].r){
-        tr[now].sum+=k*(tr[now].r-tr[now].l+1);
-        tr[now].tag+=k; // 先改再標記
-    }
-    else{
-        pushudown(now);
-        int mid=(tr[now].l+tr[now].r)/2;
-        if(l<=mid) update(now*2,l,r,k);
-        if(r>mid) update(now*2+1,l,r,k);
-        pushup(now);
-    }
-}
-int n,q;
-signed main(){
-    cin>>n>>q;
-    for(int i=1;i<=n;i++) cin>>a[i];
-    build(1,1,n);
-    while(q--){
-        int l,r,k,c;
-        cin>>c>>l>>r;
-        if(c==1){
-            cin>>k;
-            update(1,l,r,k);
+const int maxn = 2e5+5;
+
+struct SegTree{
+    // only need to revise pull & addTag
+    int sum[maxn*4], tag[maxn*4];
+    void init(int n){
+        for(int i=0; i<=n*4; i++){
+            sum[i] = 0;
+            tag[i] = 0;
         }
-        else cout<<query(1,l,r)<<endl;
     }
-}
+    int L(int x){
+        return (x<<1);
+    }
+    int R(int x){
+        return (x<<1|1);
+    }
+    void pull(int id){
+        sum[id] = sum[L(id)] + sum[R(id)];
+    }
+    void addTag(int id, int l, int r, int k){
+        tag[id] += k;
+        int len = r-l+1;
+        sum[id] += k*len;
+    }
+    void pushTag(int id, int l, int r){
+        int mid = (l+r)>>1;
+        addTag(L(id), l, mid, tag[id]);
+        addTag(R(id), mid+1, r, tag[id]);
+        tag[id] = 0;
+    }
+    void build(int id, int l, int r, vector<int> &v){
+        if(l == r){
+            sum[id] = v[l];
+            tag[id] = 0;
+            return;
+        }
+        int mid = (l+r)>>1;
+        build(L(id), l, mid, v);
+        build(R(id), mid+1, r, v);
+        pull(id);
+    }
+    void range_update(int id, int l, int r, int ll, int rr, int val){
+        if(ll <= l && r <= rr){
+            addTag(id, l, r, val);
+            return;
+        }
+        pushTag(id, l, r);
+        int mid = (l+r)>>1;
+        if(ll <= mid) range_update(L(id), l, mid, ll, rr, val);
+        if(mid < rr) range_update(R(id), mid+1, r, ll, rr, val);
+        pull(id);
+    }
+    int range_query(int id, int l, int r, int ll, int rr){
+        if(l>=ll && r<=rr) return sum[id];
+        pushTag(id, l, r);
+        int mid = (l+r)>>1, res=0;
+        if(ll<=mid) res += range_query(L(id), l, mid, ll, rr);
+        if(mid<rr) res += range_query(R(id), mid+1, r, ll, rr);
+        return res;
+    }
+}segtree;
+// segtree.init(n);
+// vector<int> v(n+1); (indexed at 1!!!)
+// segtree.build(1, 1, n, v);
+// range update + range query
