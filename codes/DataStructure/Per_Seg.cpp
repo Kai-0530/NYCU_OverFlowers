@@ -49,18 +49,17 @@ struct Per_seg{
 };
 
 signed main(){
-    int n, q; // n = array size, q = query times
+    int n, q;
     cin>>n>>q;
     vector<Per_seg *> tr;
-    tr.push_back(new Per_seg(0, n));
-    tr[0]->build();
+    tr.push_back(new Per_seg(0, n)); // [l,r)
+    tr[0]->build(); // init ver:0
     for (int i = 0; i < n; i++){
         int a;
         cin >> a;
-        tr[0]->upd(i, a); // init ver.0, 0-based!
+        tr[0]->upd(i, a); // version/index : 0-based
     } // build done
     // Set the value a in array k to x: tr[k]->upd(a, x);
     // Sum of values in range [a,b) in array k: tr[k]->query(l, r)
-    // []? [)?
     // Create a copy of array k: tr.push_back(new Per_seg(*tr[k]))
 }
