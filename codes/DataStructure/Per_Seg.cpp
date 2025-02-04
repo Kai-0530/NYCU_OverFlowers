@@ -35,12 +35,6 @@ struct Per_seg{
         val[rt] = val[ln[rt]] + val[rn[rt]]; // pull
         return rt;
     }
-    int query1(int o, int l, int r, int pos){
-        if(l==r) return val[o];
-        int mid = (l+r)>>1;
-        if(pos<=mid) return query1(ln[o], l, mid, pos);
-        else return query1(rn[o], mid+1, r, pos);
-    }
     int query2(int o, int l, int r, int ql, int qr){
         if(l>=ql && r<=qr) return val[o];
         int mid = (l+r)>>1;
@@ -62,11 +56,8 @@ struct Per_seg{
         // root.push_back(newRoot); // copy
         root[ver] = newRoot; // replace
     }
-    int point_query(int ver, int pos) {
-        // root.push_back(root[ver]); // copy
-        return query1(root[ver], 0, nn-1, pos);
-    }
     int range_query(int ver, int l, int r){
+        // root.push_back(root[ver]); // copy
         return query2(root[ver], 0, nn-1, l, r);
     }
 };
