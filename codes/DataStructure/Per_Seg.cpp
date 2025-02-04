@@ -1,65 +1,76 @@
+#include<bits/stdc++.h>
+using namespace std;
 struct Per_seg{
-    int l, r, m;
-    int v = 0;
-    Per_seg *ln = nullptr, *rn = nullptr;
-    Per_seg(int _l, int _r) : l(_l), r(_r), m((_l + _r) >> 1) {}
-    void build(){
-        if (l != r - 1)
-        {
-            ln = new Per_seg(l, m);
-            rn = new Per_seg(m, r);
-            ln->build();
-            rn->build();
-        }
+    int id,nn;
+    vector<int> ln,rn,val,root;
+    Per_seg(int n, vector<int> &arr) : nn(n), id(0){
+        root.resize(1);
+        ln.resize(32*n);
+        rn.resize(32*n);
+        val.resize(32*n);
+        root[0] = build(0, nn-1, arr);
     }
-    void upd(int tar, int value){
-        if (tar == l && tar == r - 1){
-            v = value;
-            return;
+    int build(int l, int r, vector<int> &arr){
+        int rt = ++id, mid = (l+r)>>1;
+        if(l==r){
+            val[rt] = arr[l];
+            return rt;
         }
-        else{
-            int m = (l + r) >> 1;
-            if (tar < m){
-                ln = new Per_seg(*ln);
-                ln->upd(tar, value);
-            }
-            else{
-                rn = new Per_seg(*rn);
-                rn->upd(tar, value);
-            }
-            v = ln->v + rn->v;
-        }
+        ln[rt] = build(l, mid, arr);
+        rn[rt] = build(mid+1, r, arr);
+        val[rt] = val[ln[rt]] + val[rn[rt]]; // pull
+        return rt;
     }
-    int query(int ll, int rr){
-        if (l == ll && r == rr){
-            return v;
+    int update(int pre_id, int l, int r, int pos, int v){
+        int rt = ++id, mid = (l+r)>>1;
+        ln[rt] = ln[pre_id];
+        rn[rt] = rn[pre_id];
+        val[rt] = val[pre_id];
+        if(l==r){
+            val[rt] = v;
+            return rt;
         }
-        else{
-            if (m >= rr){
-                return ln->query(ll, rr);
-            }
-            else if (m <= ll){
-                return rn->query(ll, rr);
-            }
-            else{
-                return ln->query(ll, m) + rn->query(m, rr);
-            }
-        }
+        if(pos<=mid) ln[rt] = update(ln[pre_id], l, mid, pos, v);
+        else rn[rt] = update(rn[pre_id], mid+1, r, pos, v);
+        val[rt] = val[ln[rt]] + val[rn[rt]]; // pull
+        return rt;
+    }
+    int query1(int o, int l, int r, int pos){
+        if(l==r) return val[o];
+        int mid = (l+r)>>1;
+        if(pos<=mid) return query1(ln[o], l, mid, pos);
+        else return query1(rn[o], mid+1, r, pos);
+    }
+    int query2(int o, int l, int r, int ql, int qr){
+        if(l>=ql && r<=qr) return val[o];
+        int mid = (l+r)>>1;
+        if(qr<=mid) return query2(ln[o], l, mid, ql, qr);
+        else if(ql>mid) return query2(rn[o], mid+1, r, ql, qr);
+        return query2(ln[o], l, mid, ql, qr) + query2(rn[o], mid+1, r, ql, qr);
+    }
+    // ---for outer---
+    int clone(int ver){
+        int rt = ++id;
+        ln[rt] = ln[root[ver]];
+        rn[rt] = rn[root[ver]];
+        val[rt] = val[root[ver]];
+        root.push_back(rt);
+        return rt;
+    }
+    void point_update(int ver, int pos, int newVal) {
+        int newRoot = update(root[ver], 0, nn-1, pos, newVal);
+        // root.push_back(newRoot); // copy
+        root[ver] = newRoot; // replace
+    }
+    int point_query(int ver, int pos) {
+        // root.push_back(root[ver]); // copy
+        return query1(root[ver], 0, nn-1, pos);
+    }
+    int range_query(int ver, int l, int r){
+        return query2(root[ver], 0, nn-1, l, r);
     }
 };
-
-signed main(){
-    int n, q;
-    cin>>n>>q;
-    vector<Per_seg *> tr;
-    tr.push_back(new Per_seg(0, n)); // [l,r)
-    tr[0]->build(); // init ver:0
-    for (int i = 0; i < n; i++){
-        int a;
-        cin >> a;
-        tr[0]->upd(i, a); // version/index : 0-based
-    } // build done
-    // Set the value a in array k to x: tr[k]->upd(a, x);
-    // Sum of values in range [a,b) in array k: tr[k]->query(l, r)
-    // Create a copy of array k: tr.push_back(new Per_seg(*tr[k]))
-}
+/*
+0-indexed!!
+Per_seg seg(n, arr); - build
+*/
