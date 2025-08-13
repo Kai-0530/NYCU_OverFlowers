@@ -11,7 +11,7 @@ struct Graph{
     }
  
     void addEdge(int u, int v){
-        G[u].pb(v + N2); 
+        G[u].pb(v + N1); 
     }
  
     bool bfs(){
