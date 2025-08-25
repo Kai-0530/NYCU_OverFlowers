@@ -1,9 +1,9 @@
 const int MAXN = 5e5 + 5;
 const int lgN = 20;
 
-struct SP{
+struct SP{ // 0-based
     vector <int> Sp[lgN];
-    void build(int n, int *a){
+    void build(int n, vector <int>& a){
         for(int i=0;i<n;i++) 
             Sp[0].push_back(a[i]);
         for(int h=1;h<lgN;h++){
